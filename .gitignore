@@ -1,2 +1,7 @@
 node_modules
 *~
+htdocs/btmux.min.js
+htdocs/btmux.min.css
+htdocs/ext/jquery*
+htdocs/ext/images/*.png
+

@@ -39,7 +39,9 @@ $( window ).load(function() {
    var inputline=$('#text').inputline();
    window.location.hash='awaiting input';
 
-   $('#toolbox button,#toolbox input[type=checkbox]').button({ disabled: true})
+   $('#toolbox button').button({ disabled: true })
+   $('#toolbox input[type=checkbox]').checkboxradio({ disabled: true, icon: false })
+   
 
 
 
