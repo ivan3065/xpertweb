@@ -1,4 +1,9 @@
 "use strict";
+/* 
+Copyright (c) 2014,2017, Ernst Bachmann <ivan@netandweb.de>
+All rights reserved. Please see file "LICENSE" for details.
+*/
+
 /*
    widget showing current speed, walk/flank/back
    TODO: Add mouseclick handler, change speed by click.

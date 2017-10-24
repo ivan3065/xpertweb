@@ -1,9 +1,10 @@
 {
   "name": "xpertweb",
   "version":"0.0.1",
-  "license" : "BSD-3-Clause",
+  "license" : "BSD-2-Clause",
   "description": "BTMux Webfrontend with Node.js",
   "author": "ivan/aki",
+  "repository":"https://github.com/ivan3065/xpertweb.git",
   "dependencies": {
     "async": "*",
     "escape-html": "*",

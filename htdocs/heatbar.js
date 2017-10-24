@@ -1,3 +1,8 @@
+/* 
+Copyright (c) 2014,2017, Ernst Bachmann <ivan@netandweb.de>
+All rights reserved. Please see file "LICENSE" for details.
+*/
+
 ;(function ( $, window, document, undefined ) {
 	$.widget( "xpert.heatbar" , {	
 	          options : {
