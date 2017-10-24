@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
@@ -14,12 +16,12 @@ var express = require('express'),
 // sock -d -l 127.0.0.1:5555 'bzcat BattleLog-2005-03-27-225301.log.bz2 | grep -v HUD | cut -c 7- | while read x; do echo $x; sleep 1; done'
 
 
-// statische Dateien ausliefern
+// Serve Static html/js/css
 app.use(express.static(__dirname + '/htdocs'));
 // index.html  - Directoryindex
 app.get('/', function (req, res) {
-        // so wird die Datei index.html ausgegeben
-        res.sendfile(__dirname + '/htdocs/index.html');
+  // DirectoryIndex.
+  res.sendfile(__dirname + '/htdocs/index.html');
 });
 
 var muxes={};
@@ -112,7 +114,7 @@ io.sockets.on('connection', function (socket) {
     },
     function(next) {
      if (mux) return next();
-     token=crypto.pseudoRandomBytes(5).toString('base64'); // TODO: more
+     token=crypto.pseudoRandomBytes(15).toString('base64'); // Default NodeJS/OpenSSL config: pseudoRandom and Random use the same engine, just pseudoRandom is allowed to continue if entropy pool is empty.
      console.log("TOKEN", token);
      mux=net.connect({host: conf.muxserver, port: conf.muxport}, next);
      mux.active=0;
@@ -180,15 +182,15 @@ io.sockets.on('connection', function (socket) {
 });
 
 
-// Port öffnen
-server.listen(conf.port);
+// Open Port
+server.listen(conf.port,conf.bind);
 
 console.log('Server running on port ' + conf.port);
 setInterval(function() { 
   var now = new Date()
 //  console.log("MUXES: ")
   Object.keys(muxes).forEach(function(key) {
-    console.log(" ",key,muxes[key].active); 
+//    console.log(" ",key,muxes[key].active); 
     if (!muxes[key].active) { // or use socket.setTimeout ? 
       console.log("   Age: ",(now-muxes[key].lastUse)," ms");
       if ((now-muxes[key].lastUse)>15*60*1000) {
@@ -196,6 +198,7 @@ setInterval(function() {
         muxes[key].end();
         muxes[key].destroy();
         delete muxes[key];
+        // TODO: Profile/Debug if this still leaks handles
       }
     }
   });
