@@ -1,0 +1,11 @@
+{
+	"port": 8181,
+	"xmuxserver":"localhost",
+	"xmuxserver":"frontiermux.com",
+	"muxserver":"btmux.com",
+	"xmuxserver":"sandsofsolaris.com",
+        "xmuxport":5555,
+        "muxport":3065,
+
+        "muxcharset":"utf8"
+}

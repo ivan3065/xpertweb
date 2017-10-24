@@ -1,0 +1,11 @@
+{
+  "name": "WebBTMux",
+  "description": "BTMux Webfrontend with Node.js",
+  "author": "aki",
+  "dependencies": {
+    "async": "*",
+    "escape-html": "^1.0.1",
+    "express": "3.x",
+    "socket.io": "*"
+  }
+}
