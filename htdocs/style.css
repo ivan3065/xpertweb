@@ -138,3 +138,7 @@ body.battle .hud {
 #dialog-settings select {
    width: 300px;
 }
+
+#dialog-settings textarea {
+   width: 430px;
+}

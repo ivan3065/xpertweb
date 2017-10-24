@@ -129,7 +129,8 @@ $( window ).load(function() {
    window.location.hash='greeted';
 
    inputline.on("send",function(event,t) {
-      textwindow.textView("appendLine",[['f3','faint'],'» ',['userinput'],t]);
+    // TODO: If settings.CommandEcho :
+        textwindow.textView("appendLine",[['f3','faint'],'» ',['userinput'],t]);
       socket.emit("send",t);
    });
 
@@ -234,7 +235,8 @@ $( window ).load(function() {
      
      if (fresh) {
       textwindow.textView("appendLine", [ ['f12'],"Fresh connection!" ]); 
-      // Now do your startup-script thinggy      
+      // TODO: Now do your startup-script thinggy
+      // if (startupString) { setTimeout(function() {  socket.emit("send",startupString); },500); }
      } else {
       textwindow.textView("appendLine", [ ['f12'],"Open connection re-used!" ]); 
      }
@@ -319,7 +321,7 @@ $( window ).load(function() {
    $('#btn-settings').click(function() {
       $(this).button('disable');
       $('#dialog-settings').dialog({
-           minWidth: 540,
+           minWidth: 555,
            buttons: {
              Ok: function() {
                setConfig('textwidget',$.extend({},getConfig('textwidget'),{
@@ -362,8 +364,17 @@ $( window ).load(function() {
   });
 
 
-
-
+   $('#btn-todo').button('enable');
+   $('#btn-todo').click(function() {
+      $(this).button('disable');
+      $('#dialog-todo').dialog({
+           minWidth: 777,
+           close: function() {
+              $('#btn-todo').button('enable');
+           }
+      });
+   });
+      
     window.location.hash='startup finished';
 
   },100);
