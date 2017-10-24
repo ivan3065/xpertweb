@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <title>BTMux WebClient</title>
+                <meta charset="utf-8">
+                <link rel="stylesheet" href="ext/jquery-ui-1.11.1.css">
+                <link rel="stylesheet" href="style.css">
+                <link rel="stylesheet" href="colors.css">
+                <link rel="shortcut icon" sizes="16x16"  href="map.png">
+                <script src="socket.io/socket.io.js"></script>
+                <script src="ext/jquery-2.1.1.min.js"></script>
+                <script src="ext/jquery-ui-1.11.1.min.js"></script>
+                <script src="ext/jquery-cookie.js"></script>
+                <script src="ext/jquery.mousewheel.min.js"></script>
+
+                <script src="textview.js"></script>
+                <script src="speedbar.js"></script>
+                <script src="heatbar.js"></script>
+                <script src="mapview.js"></script>
+                <script src="weapons.js"></script>
+                <script src="hudinfo.js"></script>
+                <script src="inputline.js"></script>
+                <script src="client.js"></script>
+        </head>
+	<body>
+
+	<div id="toolbox" class="ui-widget-header ui-corner-all">
+	  <button type="button" id="btn-connect">Connect</button>
+	  <button type="button" id="btn-disconnect">Disconnect</button>
+	  <button type="button" id="btn-settings">Settings</button>
+	  <input type="checkbox" id="btn-battle"><label for="btn-battle">HUD</label>
+	  <span class="debug">Debug version</span>
+	</div>
+
+	<div id="mainwindow" class="ui-corner-all">
+          <div id="textwidget"></div>
+          <div class="footerline">
+            <input id="text" type="text" autofocus tabindex="1" autocomplete="off">
+          </div>
+	</div>
+
+  	  <div class="hud" id="map"></div>
+	  <div class="hud" id="heatbar"></div>
+	  <div class="hud" id="speedbar"></div>
+          <div class="hud" id="weapons"></div>
+	  <div class="hud" id="contacts">... Contact List ...</div>
+	
+	<div style="display: none">
+
+          <div id="dialog-reconnect" title="Reconnect">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Connection between Proxy and MUX lost.<br>Reconnect?</p>
+          </div>
+
+         <div id="dialog-settings" title="Settings">  
+           <form>
+               <label for="settings-font-size">Font-Size:</label><input type="range" id="settings-font-size" min="8" max="25"><div class="display" id="font-size-display">15</div><br>
+               <label for="settings-scrollback">Scrollback:</label><input type="range" id="settings-scrollback" min="100" max="2000"><div class="display" id="scrollback-display">500</div><br>
+               <label for="settings-style">Style:</label><select id="settings-style"><option value="default">Default</option><option value="azure">Azure</option><option value="kelvin">Kelvin</option></select><br>
+           </form>
+         </div>
+
+
+	  <div id="dialog-todo" title="todo">
+	    <ul class="open">
+	    <li>Style support</li>
+	       <li>Add Ctrl-^ / Alt-^ as alias for Ctrl/alt-0</li>
+	       <li>Scroll text to bottom on enter-battle-mode</li>
+	      <li>Fix mapdata merge of ?? in hudinfo t reply (change to
+	      array-of-array-of-string instead of array-of-string?</li>
+	      <li>Filter old contacts, display LOS-state, display predicted-state?</li>
+	      <li>Prettify map display style</li>
+	      <li>Follow-me and Zoomlevel UI elements on map</li>
+	      <li>speedbar font/marker issue for speed > 100</li>
+	      <li>Click Speedbar</li>
+	      <li>Keybindings for .add 0</li>
+	      <li>Prevent ALT-Button from focusing chrome menu btn</li>
+	      <li>extra-arc display for fliparms, rottorso, turret, (per weapon with ranges?)</li>
+	      <li>count other "E# " - messages, force disconnect on overflow?</li>
+	      <li>Idle-Timout to stop hudinfo after x minutes without userinteraction</li>
+	      <li>fix double style transmission without text in between: ["text",["\tYou may also orbital drop your ",["b"],["b","f11"],"ARC-5R",[]," for ",["b"],"112,375",[]," C-Bills."]]</li>
+	    </ul>
+	    <ul class="done">
+	      <li>Preferences</li>
+	       <li>Handle resize events in all widgets</li>
+	      <li>extrapolate heat on heatbar</li>
+	      <li>doubleclick map for hudinfo t</li>
+	      <li>Fix ansi parser/textwidget not carrying color codes over
+	      newlines:  think %cbXXX%rYYY</li>
+              <li>Predict mech movement/pos between status/contact calls</li>
+	      <li>fix middle click on map intepreted as inputline-pasting on Linux</li>
+	      <li>Display out-of-screen contacts (direction markers)</li>
+	      <li>Click-change heading on map</li>
+	      <li>Zoom Map</li>
+	      <li>SmothScroll of contacts and own</li>
+	      <li>map hexno markers</li>
+	      <li>onClose question when active?</li>
+	      <li>Contact list doesn't update FoF-State if enemy mechid gets reused for friendly</li>
+	      <li>Back-Button-Preventer in URL</li>
+	      <li>"E# You are unconscious....zzzzzzz" stopps hud</li>
+	      <li>Buildings, hudinfo cb? check if supported at all by frontiers first: They are not.</li>
+	    </ul>
+	  </div>
+        
+        </div>
+	</body>
+</html>

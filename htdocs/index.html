@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <title>BTMux WebClient</title>
+                <meta charset="utf-8">
+                <meta name="mobile-web-app-capable" content="yes">
+                <link rel="shortcut icon" sizes="16x16"  href="map.png">
+                <link rel="stylesheet" href="ext/jquery-ui-1.11.1.css">
+                <link rel="stylesheet" href="btmux.min.css">
+                <script src="socket.io/socket.io.js"></script>
+                <script src="ext/jquery-2.1.1.min.js"></script>
+                <script src="ext/jquery-ui-1.11.1.min.js"></script>
+                <script src="ext/jquery-cookie.js"></script>
+                <script src="ext/jquery.mousewheel.min.js"></script>
+              
+                <script src="btmux.min.js"></script>
+        </head>
+	<body>
+
+	<div id="toolbox" class="ui-widget-header ui-corner-all">
+	  <button type="button" id="btn-connect">Connect</button>
+	  <button type="button" id="btn-disconnect">Disconnect</button>
+	  <button type="button" id="btn-settings">Settings</button>
+	  <input type="checkbox" id="btn-battle"><label for="btn-battle">HUD</label>
+          <button type="button" id="btn-help">Help</button>
+	</div>
+
+	<div id="mainwindow">
+          <div id="textwidget"></div>
+          <div class="footerline">
+            <input id="text" type="text" autofocus tabindex="1" autocomplete="off">
+          </div>
+	</div>
+	
+	<div class="hud" id="map"></div>
+	<div class="hud" id="heatbar"></div>
+	<div class="hud" id="speedbar"></div>
+	<div class="hud" id="weapons"></div>
+	<div class="hud" id="contacts"></div>
+	
+	
+	<div style="display: none">
+
+          <div id="dialog-reconnect" title="Reconnect">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Connection between Proxy and MUX lost.<br>Reconnect?</p>
+          </div>
+
+         <div id="dialog-settings" title="Settings">  
+           <form>
+               <label for="settings-font-size">Font-Size:</label><input type="range" id="settings-font-size" min="8" max="25"><div class="display" id="font-size-display">15</div><br>
+               <label for="settings-scrollback">Scrollback:</label><input type="range" id="settings-scrollback" min="100" max="2000"><div class="display" id="scrollback-display">500</div><br>
+               <label for="settings-style">Style:</label><select id="settings-style"><option value="default">Default</option><option value="azure">Azure</option><option value="kelvin">Kelvin</option></select><br>
+           </form>
+         </div>
+
+	 
+	 <div id="dialog-help" title="Help">
+	   
+	 
+	 </div>
+
+        </div>
+	</body>
+</html>

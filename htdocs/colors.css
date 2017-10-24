@@ -1,0 +1,43 @@
+/* ANSI Colors */
+
+.ansi-color .f0 { color:#000; }
+.ansi-color .f1 { color:#A00; }
+.ansi-color .f2 { color:#0A0; }
+.ansi-color .f3 { color:#A50; }
+.ansi-color .f4 { color:#00A; }
+.ansi-color .f5 { color:#A0A; }
+.ansi-color .f6 { color:#0AA; }
+.ansi-color .f7 { color:#AAA; }
+.ansi-color .f8 { color:#555; }
+.ansi-color .f9 { color:#F55; }
+.ansi-color .f10 { color:#5F5; }
+.ansi-color .f11 { color:#FF5; }
+.ansi-color .f12 { color:#55F; }
+.ansi-color .f13 { color:#F5F; }
+.ansi-color .f14 { color:#5FF; }   
+.ansi-color .f15 { color:#FFF; }   
+.ansi-color .b0 { background-color:#000; }
+.ansi-color .b1 { background-color:#A00; }
+.ansi-color .b2 { background-color:#0A0; }
+.ansi-color .b3 { background-color:#A50; }
+.ansi-color .b4 { background-color:#00A; }
+.ansi-color .b5 { background-color:#A0A; }
+.ansi-color .b6 { background-color:#0AA; }
+.ansi-color .b7 { background-color:#AAA; }
+.ansi-color .b8 { background-color:#555; }
+.ansi-color .b9 { background-color:#F55; }
+.ansi-color .b10 { background-color:#5F5; }
+.ansi-color .b11 { background-color:#FF5; }
+.ansi-color .b12 { background-color:#55F; }
+.ansi-color .b13 { background-color:#F5F; }
+.ansi-color .b14 { background-color:#5FF; }   
+.ansi-color .b15 { background-color:#FFF; }
+
+.ansi-color .u { text-decoration: underline; }
+.ansi-color .i { font-style: italic; }
+.ansi-color .b { /* intense */ }
+.ansi-color .bold { font-weight: bold; }
+.ansi-color .concealed { opacity:0.1 ; }
+.ansi-color .faint { opacity:0.50 ; }
+.ansi-color .userinput { color:#FA5; font-size: 0.9em; font-weight: bold; }
+
