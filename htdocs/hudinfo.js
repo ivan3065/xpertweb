@@ -95,10 +95,23 @@ var HUDInfo=(function( $ ) {
          }
          return Math.abs(hA-hB)>2;      
       break;
+      case 'H': // Hover
+        var tA=tileA.substr(0,1);
+        var tB=tileB.substr(0,1);
+        if (tA=='~') hA=0; // Hover is on Water
+        if (tB=='~') hB=0;
+        if (Math.abs(hA-hB)>1) return true;
+        if (tA==tB) return false; // Don't paint Forests in red.
+        if (tA=='"' || tA=='`' || tA == '&' || tB=='"' || tB=='`' || tB == '&') return true; // No Woods or Fire.
+        return false;
       default: return false;
       }
-    }
+    },
     
+    hasTurret: function() {
+     if (this.type=='B' || this.type=='Q' || this.type=='I' || this.type=='S') return false; // Biped,Quad,Infantry,Battlesuit. TODO: check if vtols&co report a turret
+      return this.turret !== null; // this also shows rottorso offset. Do not want! So:Check type character?
+    }
   });
 
 

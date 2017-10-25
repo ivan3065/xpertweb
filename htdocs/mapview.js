@@ -305,6 +305,7 @@ All rights reserved. Please see file "LICENSE" for details.
 
 
 		  	this.repaintOwnNeeded=false;
+		  	// TODO: Warum kein hudinfo-Mech-Object?
 		  	this.ownmech={
 		  	  id:'??',
 		  	  heading:0,
@@ -696,6 +697,8 @@ All rights reserved. Please see file "LICENSE" for details.
                    ctx.translate(pixelPos[0], pixelPos[1]);
                    ctx.scale(1,this.muxToScreenY/this.muxToScreenX);
                    
+                   
+                   // ARCs depend on unit type, TODO: implement more.
                    // forward arc
                    ctx.fillStyle='rgba(0,200,0,0.2)';
                    ctx.beginPath();
@@ -718,7 +721,7 @@ All rights reserved. Please see file "LICENSE" for details.
                    ctx.stroke();
                    
                    // Wanted direction
-                   if (me.desiredHeading && Math.abs(me.desiredHeading-me.heading) > 0.04) {
+                   if (me.desiredHeading!==null && Math.abs(me.desiredHeading-me.heading) > 0.04) {
                     ctx.strokeStyle='rgb(130,20,150)';
                     ctx.lineWidth=1.3;
                     s=s*0.75;
@@ -728,6 +731,22 @@ All rights reserved. Please see file "LICENSE" for details.
                                 s * Math.sin(me.desiredHeading - Math.PI/2.0));
                      ctx.stroke();
                    }
+      	           
+      	           // If type:Tank (Or anything with turret), show turret heading!
+      	           if (me.hasTurret && me.hasTurret()) {
+      	             if (me.turret!==null /*&&  Math.abs(me.turret-me.heading) > 0.04*/) {
+      	               
+                       ctx.strokeStyle='rgb(30,20,250)';
+                       ctx.lineWidth=1.5;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(30 * Math.cos(me.heading+me.turret + Math.PI/2.0), // Do I need to understand why I get -3.1415 for Turret offset=0?
+                                   30 * Math.sin(me.heading+me.turret + Math.PI/2.0));
+                        ctx.stroke();
+      	             }
+      	           }
+      	           
+      	           
       	           
       	           ctx.restore();
       	           /// END Scaled/Deformed paint
@@ -749,16 +768,9 @@ All rights reserved. Please see file "LICENSE" for details.
                     ctx.clearRect(0,0,w,h);
 
 		    ctx.font='22px Arial,sans-serif';
-		    ctx.textBaseline='middle';
-		    ctx.textAlign='center';
 		    
 		    var extrapolatePossible=0;
                     this.contacts.forEach((function(me) {
-                      if (me.id==me.id.toLowerCase()) {
-                         ctx.fillStyle='green';
-                      } else { 
-  		        ctx.fillStyle='red';
-                      } 
                       var mapPos=me.position.mapXY();
                       var thisWasExtrapolated=false;
                       var age=now-me.lastLOS;
@@ -772,53 +784,90 @@ All rights reserved. Please see file "LICENSE" for details.
                         }
                         extrapolatePossible++;
                         thisWasExtrapolated=true;
-                     }
+                       }
 
+                       var txt='['+me.id+']';
+                       if (me.name) txt+=' '+me.name;
+                       var wid=ctx.measureText(txt).width+4;
+                       var boxHW=20; // Half-Size of the box we want to draw if contact outside screen
+                       var boxHH=15;
 
                        var pixelPos=this._pixelPos(mapPos);
                        pixelPos[0] -= this.options.scrollX;
                        pixelPos[1] -= this.options.scrollY;
-                       if (pixelPos[0] > 0 && pixelPos[0] < w &&
-                           pixelPos[1] > 0 && pixelPos[1] < h) {
+                       
+                       
+                       if (pixelPos[0] > boxHW && pixelPos[0] < w-boxHW &&
+                           pixelPos[1] > boxHH && pixelPos[1] < h-boxHH) { // Inside usefull screen area?
+                           
+                         ctx.fillStyle='rgba(160,160,160,0.4)';
+                         ctx.strokeStyle='rgb(100,100,100)';
+                         ctx.lineWidth=1;
+                         ctx.beginPath();
+                         ctx.rect(pixelPos[0]-2, pixelPos[1]-1,wid,24);
+                         ctx.fill();
+                         ctx.stroke();
 
+                         if (me.id==me.id.toLowerCase()) {
+                           ctx.fillStyle='green';
+                         } else { 
+                           ctx.fillStyle='red';
+                         } 
 
-                       ctx.fillText(me.id,pixelPos[0], pixelPos[1]);
-                      
+                        ctx.font='22px Arial,sans-serif';
+  		        ctx.textBaseline='top';
+		        ctx.textAlign='left';
+                        ctx.fillText(txt,pixelPos[0], pixelPos[1]);
 
-                     /// Begin Scaled/Deformed paint
-                      ctx.save();
-                      ctx.translate(pixelPos[0], pixelPos[1]);
-                      ctx.scale(1,this.muxToScreenY/this.muxToScreenX);
-                      
-                     // Direction indicator:
-                       var s=me.speed;
-                       ctx.strokeStyle='rgb(50,20,10)';
-                       ctx.lineWidth=2;
-                       if (s>=0 && s < 10) s=10;
-                      ctx.beginPath();
-                      ctx.moveTo(0, 0);
-                      ctx.lineTo(s * Math.cos(me.heading - Math.PI/2.0),
-                                 s * Math.sin(me.heading - Math.PI/2.0));
-                      ctx.stroke();
-                      
-                      // Undo deformation
-                      ctx.restore();
+                       /// Begin Scaled/Deformed paint
+                        ctx.save();
+                        ctx.translate(pixelPos[0], pixelPos[1]);
+                        ctx.scale(1,this.muxToScreenY/this.muxToScreenX);
+                        
+                       // Direction indicator:
+                         var s=me.speed;
+                         ctx.strokeStyle='rgb(50,20,10)';
+                         ctx.lineWidth=2;
+                         if (s>=0 && s < 10) s=10;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(s * Math.cos(me.heading - Math.PI/2.0),
+                                   s * Math.sin(me.heading - Math.PI/2.0));
+                        ctx.stroke();
+                        
+                        // Undo deformation
+                        ctx.restore();
 
                       } else {
                         // Not in Mapview. paint direction marker instead.
                         // start with a virtual line from map display center to contact
 			var cent=[w/2,h/2];
 
-			var boxHW=20; // Half-Size of the box we want to draw. todo: use ctx.fontMetricsstuff
-                        var boxHH=15;
 
 			var       pos=_lineIntersection([0,boxHH],  [w,boxHH],  cent,pixelPos); // Top line
 			if (!pos) pos=_lineIntersection([0,h-boxHH],[w,h-boxHH],cent,pixelPos); // Bottom Line
 			if (!pos) pos=_lineIntersection([boxHW,0],  [boxHW,h],  cent,pixelPos); // Left Line
 			if (!pos) pos=_lineIntersection([w-boxHW,0],[w-boxHW,h],cent,pixelPos); // right Line
-			if (!pos) console.log("Follow this line, it leads to never-neverland",cent,pixelPos);                        
+			if (!pos) {
+			  console.log("Follow this line, it leads to never-neverland",cent,pixelPos);
+			  return;
+                        }
 
-			 ctx.fillText(me.id,pos[0], pos[1]);
+  		         ctx.font='16px Arial,sans-serif';
+ 		         ctx.textBaseline='middle';
+		         ctx.textAlign='center';
+		         ctx.fillStyle='rgba(140,140,140,0.5)';
+                         ctx.strokeStyle='rgb(100,100,130)';
+                         ctx.beginPath();
+                         ctx.rect(pos[0]-boxHW, pos[1]-boxHH,boxHW*2,boxHH*2);
+                         ctx.fill();
+                         ctx.stroke();
+                         if (me.id==me.id.toLowerCase()) {
+                           ctx.fillStyle='green';
+                         } else { 
+                           ctx.fillStyle='red';
+                         } 
+			 ctx.fillText('['+me.id+']',pos[0], pos[1]);
                       // also: don't interpolate
                        if (thisWasExtrapolated) extrapolatePossible--;
                       }
@@ -1080,24 +1129,8 @@ All rights reserved. Please see file "LICENSE" for details.
                  // Map navigation
                  // Use mousedown or click?
                  __mapMouseClick : function(e) {
-                 // TODO: doesn't work with new firefox. Click evebt only is sent on left button(which==1)
-                  return;
-                   if (e.which==2 || (e.which==1 && e.shiftKey)) {
-                     e.preventDefault();
-                     if (!this.ownmech.position) return; // We don't know where we are!
-                     var clickpos=this._mapPos([e.offsetX + this.options.scrollX,  e.offsetY + this.options.scrollY]);
-                     var ownpos=this.ownmech.position.mapXY();
-                     var difx=ownpos[0]-clickpos[0];
-                     var dify=ownpos[1]-clickpos[1];
-                     var ang=Math.round((Math.atan2(dify,difx) - Math.PI/2.0)*180.0 / Math.PI);
-                     while (ang < 0) { ang += 360; }
- //                    console.log("Middle click on", clickpos, "while we are at ",ownpos,"so the wanted heading is",ang);
-                     this.element.trigger('send','heading '+ang);
-                     // trick for showing heading earlier. bugs out on stationary units, but that will be fixed next GS
-                     this.ownmech.desiredHeading=ang/180.0 * Math.PI;
-                     this.queueOwnRepaint();
-                     
-                   }
+                   // TODO: doesn't work with new firefox. Click event only is sent on left button(which==1)
+                    return;
                  },
 
                  __mapMouseUp : function(e) {
