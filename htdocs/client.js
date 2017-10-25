@@ -59,6 +59,7 @@ $( window ).load(function() {
    var socket = io.connect();
 
 
+
    // global keyboard handling
    $(document).keydown(function(e) {
      var K=$.ui.keyCode;
@@ -100,6 +101,7 @@ $( window ).load(function() {
        else if (chr=='K') { e.preventDefault(); socket.emit("send",'kick'); return; }
        else if (chr=='P') { e.preventDefault(); socket.emit("send",'punch'); return; }
        else if (chr=='N') { e.preventDefault(); socket.emit("send",'navigate'); return; }
+       else if (chr=='S') { e.preventDefault(); socket.emit("send",'status'); return; }
        else if (chr=='T') { e.preventDefault(); socket.emit("send",'tactical'); return; }
       // Don't break copy&paste else if (chr=='C') { e.preventDefault(); socket.emit("send",'contacts'); return; }
        else if (chr=='R') { e.preventDefault(); socket.emit("send",'range'); return; } // Mostly: prevent reload
@@ -374,8 +376,35 @@ $( window ).load(function() {
            }
       });
    });
+
+
+   $('#btn-help').button('enable');
+   $('#btn-help').click(function() {
+      $(this).button('disable');
+      $('#dialog-help').dialog({
+           minWidth: 777,
+           close: function() {
+              $('#btn-help').button('enable');
+           }
+      });
+   });
       
     window.location.hash='startup finished';
 
+    setInterval(function checkWebSocket() {
+     // FEAR Polling mode 
+     try {
+       if (socket.io.engine.transport.name != 'websocket') { // TODO: This is not an official socket.io API. Might break on other versions.
+         $('#ws-warning').text("Warning: connected in "+String(socket.io.engine.transport.name)+" Mode! Expect LAG.");
+       } else {
+         $('#ws-warning').text("");
+       }
+     }
+     catch(e) { console.log(e); $('#ws-warning').text(String(e)); }
+    },1234);
+
   },100);
+  
+  
+  
 });
