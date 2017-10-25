@@ -313,8 +313,8 @@ All rights reserved. Please see file "LICENSE" for details.
 		  	  desiredSpeed:0,
 		  	  turret: 0,
 		  	  type:'i',
-		  	  position: null
-		  	  
+		  	  position: null,
+		  	  flags:''
 		  	};
 		  	
 		  	// For X/Y Markers
@@ -449,7 +449,8 @@ All rights reserved. Please see file "LICENSE" for details.
 
                        //this.queueMapRepaint(10); // Redraw immediatlty to avoid blue flicker
                        this.paintMap();
-                       this.queueOwnRepaint();
+//                       this.queueOwnRepaint();
+                       this.paintOwn();
                        this.queueContactsRepaint();
                        this.queueLegendRepaint();
                   },
@@ -554,53 +555,45 @@ All rights reserved. Please see file "LICENSE" for details.
 		  updateOwnMechInfo: function updateOwnMechInfo(mech) {
 		    var repaintNeeded=false;
 		    var centerNeeded=false;
+		    var mapRepaintNeeded=false;
+		    this.ownmechObject=mech;
+		    // TODO: Why do we need both this sack-of-variables and the Mech object?
 		    $.each(this.ownmech, (function(key,olddata) {
 		      if (mech[key] != null && ((mech[key].compare && !mech[key].compare(olddata)) || (!mech[key].compare && mech[key] != olddata))) {
                         this.ownmech[key]=mech[key];
                         if (key=='id') {
+                         // id-change -> First-time in a new mech: Center, because thats most often leavebase or a new radiotower
                          centerNeeded=true;
+                        }
+                        if (key=='flags') {
+                          // Flag change might need to change cliffings on map... redraw just in case
+                           mapRepaintNeeded=true;
                         }
 //                        console.log("changed key:",key);
                         repaintNeeded=true;
-                        if (key=='position' && this.options.followSelf) {
-                         // First-time in a new mech: Center, because thats most often leavebase or a new radiotower
-                         centerNeeded=true;
-                          // Need to re-centermap.
+                        if (key=='position') {
+                        
+                          if (this.options.followSelf) {
+                            // Need to re-centermap.
+                            centerNeeded=true;
+                          }
+                          if (olddata && mech.position && olddata.z != mech.position.z) {
+                            // Z-Level-Changes might change cliff lines.
+                            mapRepaintNeeded=true;
+                          }
                         }
 		      }
 		    }).bind(this));
 		    this.__ownmech_stamp=new Date();
 
-/*
-if (!this.__factor) {
-  this.__factor=0;
-  this.__factorCount=0;
-}
-// Measuring speed temp
-if (this.__storedMechPos && this.__storedMechSpeed == this.ownmech.speed &&  this.__storedMechSpeed > 5) {
- var dateDiff=(new Date)-this.__storedMechStamp;
- var oPos=this.__storedMechPos.mapXY();
- var newPos= this.ownmech.position.mapXY();
- var diff=[oPos[0]-newPos[0],oPos[1]-newPos[1]];
- var dist=Math.sqrt(diff[0]*diff[0]+diff[1]*diff[1]);
- if (dist > 0) {
-   this.__factorCount++;
-   this.__factor+=this.__storedMechSpeed / (dist/dateDiff);
-   //console.log("thats",dist,"hexes,",dist/dateDiff*1000,"hexes per second, reported speed is ", this.ownmech.speed,"calculated speed is ",(dist/dateDiff)*this.__factor/this.__factorCount);
-   console.log(this.__factor/this.__factorCount);
-  }
- // *1000=per sec,*60*60=per hour,/1000 =meters per hour,/30=hexes per hour 
-  
-}
-this.__storedMechPos= this.ownmech.position;
-this.__storedMechStamp=new Date(); // Or use the stamp inside the mech object?		    
-this.__storedMechSpeed= this.ownmech.speed;
-*/
-		    if (centerNeeded && this.ownmech.position) {
+		    if (centerNeeded && this.ownmech.position) { // TODO: and distance old->new center > xx
 		      this.centerOn(this.ownmech.position); // .calculateXY(layout)
                     }
 		    if (repaintNeeded) {
 		     this.queueOwnRepaint();
+		    }
+		    if (mapRepaintNeeded) {
+		      this.queueMapRepaint();
 		    }
 		  },
 		  // hudparser callback
@@ -673,7 +666,7 @@ this.__storedMechSpeed= this.ownmech.speed;
                     var w=this.__width;
                     var h=this.__height;
                     var ctx=this.owncanvas.getContext('2d');
-                    var me=this.ownmech;
+                    var me=this.ownmechObject;
                     var p=this.ownmech.position;
                     ctx.clearRect(0,0,w,h);
                     if (!p) return;
@@ -685,7 +678,7 @@ this.__storedMechSpeed= this.ownmech.speed;
                       
                       mapPos[0]+=dist * Math.cos(me.heading - Math.PI/2.0);
                       mapPos[1]+=dist * Math.sin(me.heading - Math.PI/2.0);
-                      // TODO: Don'T do that if ownContact is outside the visible area!
+                      // TODO: Don't do that if ownContact is outside the visible area!
                       // set flag here, maybe unset after checking pixelPos, queue at end.
                       this.queueOwnRepaint(75);
                     }
@@ -840,8 +833,12 @@ this.__storedMechSpeed= this.ownmech.speed;
                  },
 
 
-                 /// MAP
-                 _drawHex: function(ctx,x,y,hex) {
+                 /// MAP-Painting (Outsource this function to a Style-Lib?)
+                 // x,y: Canvas-Position,
+                 // hex: two-letter-field data
+                 // mx,my : MUX-Hex-Coordinates
+                 // cliffXX: Bool if there's a cliff between this and the N/NW/SW hex
+                 _drawHex: function(ctx,x,y,hex,mx,my,cliffN,cliffNW,cliffSW) {
                    ctx.beginPath();
                    ctx.moveTo(x,y+this.halfHexHeight);
                    ctx.lineTo(x+this.fourthHexWidth,y);
@@ -863,8 +860,40 @@ this.__storedMechSpeed= this.ownmech.speed;
                    }
 
                    // Paint texture
-                   
+                   /// TODO.
+                    
 
+                   // paint Cliffs
+                   if (cliffN || cliffNW || cliffSW) {
+                     var oldCol=ctx.strokeStyle;
+                     var oldWid=ctx.lineWidth; // TODO: Benchmark if this is faster than save()/restore();
+                     ctx.strokeStyle='rgba(240,70,70,0.8)';
+                     ctx.lineWidth=3;
+                     if (cliffN) {
+                       ctx.beginPath();
+                       ctx.moveTo(x+this.fourthHexWidth,y);
+                       ctx.lineTo(x+this.hexWidth,y);
+                       ctx.stroke();
+                     }
+                     if (cliffNW) {
+                       ctx.beginPath();
+                       ctx.moveTo(x,y+this.halfHexHeight);
+                       ctx.lineTo(x+this.fourthHexWidth,y);
+                       ctx.stroke();
+                     }
+                     if (cliffSW) {
+                       ctx.beginPath();
+                       ctx.moveTo(x,y+this.halfHexHeight);
+                       ctx.lineTo(x+this.fourthHexWidth,y+this.hexHeight);
+                       ctx.stroke();
+                     }
+
+                     
+                     ctx.strokeStyle=oldCol;
+                     ctx.lineWidth=oldWid;
+                   }
+
+                   
                    // text color depending on color used for background.
                    // simple hack: darker colors have shorter string :)
                    if (fs.length <= 13) {
@@ -873,13 +902,24 @@ this.__storedMechSpeed= this.ownmech.speed;
                      ctx.fillStyle='black'; 
                    }
                    ctx.fillText(hex,x+this.hexWidth,y+this.hexHeight);
+                   
+                   // Draw HEX number if zoomed all the way in
+                   if (this.options.zoom > 75) {
+                     ctx.textBaseline='top';
+                     ctx.textAlign='left';
+
+                     ctx.fillText(mx+" "+my,x+this.fourthHexWidth+2,y+3);
+ 
+                     ctx.textBaseline='bottom';
+                     ctx.textAlign='right';
+                   }
                  },
  	         paintMap: function() { 
                     var w=this.mapcanvas.width;
                     var h=this.mapcanvas.height;
                     var lw=w-this.hexWidth; // avoid painting part of hexes. we have enough overlap.
                     var lh=h-this.halfHexHeight; 
-                    
+                    var me=this.ownmechObject;
                     // See if we need to shift mapOffset
                      var xOverscroll=w - this.__width - this.mapCanvasPixelScroll[0];
                      var yOverscroll=h - this.__height - this.mapCanvasPixelScroll[1];
@@ -920,6 +960,8 @@ this.__storedMechSpeed= this.ownmech.speed;
 
                     if (this.options.zoom > 100) {
    	              ctx.font='16px sans-serif'; 
+                    } else if (this.options.zoom > 70) {
+   	              ctx.font='14px sans-serif'; 
                     } else if (this.options.zoom > 40) {
    	              ctx.font='13px sans-serif'; 
                     } else if (this.options.zoom > 25) {
@@ -929,18 +971,25 @@ this.__storedMechSpeed= this.ownmech.speed;
                     }
    	            ctx.textBaseline='bottom';
                     ctx.textAlign='right';
-   	                                
+
    	            var mapX=this.mapOffset[0];
                     for (var x=0; x < lw; x+=this.hexWidth,mapX++) {
                       var mapY=this.mapOffset[1]; 
    	              for (var y=0+((mapX+1)%2)*this.halfHexHeight; y < lh; y+=this.hexHeight,mapY++) {
-
-   	                var mapline=this.mapdata.map[mapY];
-   	                if (typeof mapline!= 'string') mapline='';
    	                if (mapX>=0 && mapY>=0 && mapX < this.mapdata.width && mapY < this.mapdata.height) { 
-   	                 var hex=mapline.slice(mapX*2,mapX*2+2);
-   	                 if (hex.length != 2) hex='??';
-                         this._drawHex(ctx,x,y,hex);
+   	                 var hex=this._getHex(mapX,mapY);
+   	                 var cN=false;
+   	                 var cNW=false;
+   	                 var cSW=false;
+   	                 if (this.options.zoom >= 20 && me && me.position && me.isCliff) {
+   	                    var hexN=this._getHex(mapX,mapY-1);
+   	                    var hexNW=this._getHex(mapX-1,(mapX%2)?(mapY-1):mapY);
+   	                    var hexSW=this._getHex(mapX-1,(mapX%2)?mapY:(mapY+1));
+   	                    cN=me.isCliff(hex,hexN);
+   	                    cNW=me.isCliff(hex,hexNW);
+   	                    cSW=me.isCliff(hex,hexSW);
+   	                 }
+                         this._drawHex(ctx,x,y,hex,mapX,mapY,cN,cNW,cSW);
                         }
    	              
    	              }
@@ -951,6 +1000,13 @@ this.__storedMechSpeed= this.ownmech.speed;
    		    
                  },
                  
+                 _getHex: function(mapX,mapY) {
+                   var mapline=this.mapdata.map[mapY];
+                   if (typeof mapline!= 'string') mapline='';
+                   var hex=mapline.slice(mapX*2,mapX*2+2);
+                   if (hex.length != 2) hex='??';
+                   return hex;
+                 },
 
 
  	         paintLegend: function() { 

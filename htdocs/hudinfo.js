@@ -69,10 +69,36 @@ var HUDInfo=(function( $ ) {
 // Mech Object  
   function Mech(id) {
    this.id=id;
+   this.flags="";
+  }
+  
+  function getRealHeight(tile) {
+    var t=tile.substr(0,1);
+    var h=parseInt(tile.substr(1,1));
+    if (!isFinite(h)) h=0;
+    if (t=='~') h=0-h; // Water: Below
+    if (t=='-') h=0; // Ice is 0 util it breaks.
+    // TODO: Bridge stuff?
+    return h;
   }
   
   $.extend(Mech.prototype,{
-    // TODO: isCliff:fuction(tile,tile) -> boolean
+    isCliff: function cliffCheck(tileA,tileB) {
+      var hA=getRealHeight(tileA);
+      var hB=getRealHeight(tileB);
+      
+      switch (this.type) {
+      case 'Q': // Quad
+      case 'B': // Biped
+         if (this.flags.match(/J/) && this.position) { // Jumping
+           return ((hA > this.position.z) ^ (hB > this.position.z)); // XOR: don't paint large HighZ-Areas red.
+         }
+         return Math.abs(hA-hB)>2;      
+      break;
+      default: return false;
+      }
+    }
+    
   });
 
 
