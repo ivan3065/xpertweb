@@ -83,7 +83,7 @@ $( window ).load(function() {
          socket.emit("send",'sight '+(e.which-48));
          return;
        }
-       else if (e.which==192) {  e.preventDefault(); socket.emit("send",'sight 0'); return; }
+       else if (e.which==192 || e.which==160) {  e.preventDefault(); socket.emit("send",'sight 0'); return; }
        else if (e.which==18) { e.preventDefault(); return; } // pure alt key. prevent unwanted browser actions
        
        else console.log('alt ', e.which);
@@ -95,7 +95,7 @@ $( window ).load(function() {
          socket.emit("send",'fire '+(e.which-48));
          return;
        }
-       else if (e.which==192) {  e.preventDefault(); socket.emit("send",'fire 0'); return; }
+       else if (e.which==192 || e.which==160) {  e.preventDefault(); socket.emit("send",'fire 0'); return; }
        else if (chr=='Z') { e.preventDefault(); socket.emit("send",'speed 0'); return; }
        else if (chr=='M') { e.preventDefault(); socket.emit("send",'speed flank'); return; }
        else if (chr=='K') { e.preventDefault(); socket.emit("send",'kick'); return; }
