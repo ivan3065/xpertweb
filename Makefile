@@ -11,7 +11,7 @@ jquery-ui: htdocs/ext/jquery-ui.min.js htdocs/ext/jquery-ui.css \
 
 
 # TODO: could be done with npm package.json script hooks
-htdocs/btmux.min.js: htdocs/textview.js htdocs/speedbar.js htdocs/heatbar.js htdocs/mapview.js htdocs/weapons.js htdocs/hudinfo.js htdocs/inputline.js htdocs/client.js
+htdocs/btmux.min.js: htdocs/textview.js htdocs/speedbar.js htdocs/heatbar.js htdocs/mapview.js htdocs/weapons.js htdocs/contacts.js htdocs/hudinfo.js htdocs/inputline.js htdocs/client.js
 	cat $+ | yui-compressor --type js > $@
 
 htdocs/btmux.min.css: htdocs/colors.css htdocs/style.css

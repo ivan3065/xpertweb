@@ -57,6 +57,8 @@ $( window ).load(function() {
    window.location.hash='map mapped';
    var weapons=$('#weapons').weaponlist();
    window.location.hash='weapons primed';
+   var contacts=$('#contacts').contactlist();
+   window.location.hash='looking for contacts';
 
    var inputline=$('#text').inputline();
    window.location.hash='awaiting input';
@@ -245,7 +247,11 @@ $( window ).load(function() {
      HUD.addListener('ownMechChanged',wl.updateMech.bind(wl));
      HUD.addListener('weaponsChanged',wl.updateWeapons.bind(wl)); // TODO: emit
      HUD.addListener('limbsChanged',wl.updateLimbs.bind(wl)); // TODO: emit
-     
+
+     var conl=contacts.contactlist('instance');
+     HUD.addListener('ownMechChanged',conl.updateOwn.bind(conl));
+     HUD.addListener('contactsChanged',conl.updateContacts.bind(conl));
+          
      
      $('#btn-connect').button('disable');
      $('#btn-disconnect').button('enable');
