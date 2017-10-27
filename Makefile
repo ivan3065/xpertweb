@@ -6,7 +6,7 @@ jquery-ui: htdocs/ext/jquery-ui.min.js htdocs/ext/jquery-ui.css \
        htdocs/ext/images/ui-icons_777777_256x240.png htdocs/ext/images/ui-icons_444444_256x240.png htdocs/ext/images/ui-icons_555555_256x240.png htdocs/ext/images/ui-icons_ffffff_256x240.png \
        htdocs/ext/images/ui-bg_highlight-soft_100_eeeeee_1x100.png htdocs/ext/images/ui-icons_ef8c08_256x240.png htdocs/ext/images/ui-icons_222222_256x240.png \
        htdocs/ext/images/ui-bg_glass_100_fdf5ce_1x400.png htdocs/ext/images/ui-bg_glass_65_ffffff_1x400.png htdocs/ext/images/ui-bg_glass_100_f6f6f6_1x400.png \
-       htdocs/ext/images/ui-bg_gloss-wave_35_f6a828_500x100.png
+       htdocs/ext/images/ui-bg_gloss-wave_35_f6a828_500x100.png htdocs/ext/images/ui-bg_diagonals-thick_20_666666_40x40.png
 
 
 
