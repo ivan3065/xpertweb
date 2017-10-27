@@ -5,6 +5,23 @@ All rights reserved. Please see file "LICENSE" for details.
 */
 
 
+// This is only safe for HTML inserted as content, not as tag attributes!
+// Only used for command echo, so it's more or less safe userinput anyhow.
+var simpleHTMLEscape=(function() {
+  var _entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+  };
+  function _mapLookup(s) {
+      return _entityMap[s];
+  }
+  return function escapeHtml(inp) {
+    return String(inp).replace(/[&<>]/g, _mapLookup);
+  };
+})();
+
+
 // $('document').ready(function() {
 $( window ).load(function() {
   window.location.hash='delaying startup';
@@ -132,7 +149,7 @@ $( window ).load(function() {
 
    inputline.on("send",function(event,t) {
     // TODO: If settings.CommandEcho :
-        textwindow.textView("appendLine",[['f3','faint'],'» ',['userinput'],t]);
+        textwindow.textView("appendLine",[['f3','faint'],'» ',['userinput'],simpleHTMLEscape(t)]);
       socket.emit("send",t);
    });
 
@@ -235,12 +252,17 @@ $( window ).load(function() {
      });
      
      
+     var startupConfig=getConfig("startup");
      if (fresh) {
-      textwindow.textView("appendLine", [ ['f12'],"Fresh connection!" ]); 
-      // TODO: Now do your startup-script thinggy
-      // if (startupString) { setTimeout(function() {  socket.emit("send",startupString); },500); }
+       textwindow.textView("appendLine", [ ['f12'],"Fresh connection!" ]); 
+       if (startupConfig.onConnect) {
+         setTimeout(function() {  socket.emit("send",startupConfig.onConnect); },500); 
+       }
      } else {
-      textwindow.textView("appendLine", [ ['f12'],"Open connection re-used!" ]); 
+       textwindow.textView("appendLine", [ ['f12'],"Open connection re-used!" ]); 
+       if (startupConfig.onReconnect) {
+         setTimeout(function() {  socket.emit("send",startupConfig.onReconnect); },500); 
+       }
      }
    });
 
@@ -333,6 +355,9 @@ $( window ).load(function() {
                setConfig('mapwidget',$.extend({},getConfig('mapwidget'),{
                  style: $('#map').mapview('option','style') 
                }));
+               setConfig('startup',$.extend({},getConfig('startup'), {
+                 onConnect: $('#settings-connect-script').val()
+               }));
              
                 $( this ).dialog( "close" );
              }
@@ -361,7 +386,7 @@ $( window ).load(function() {
           $('#map').mapview('option','style',$( this ).val());
       });
       $('#settings-style').val($('#map').mapview('option','style'));
-
+      $('#settings-connect-script').val(getConfig("startup").onConnect);
 
   });
 
