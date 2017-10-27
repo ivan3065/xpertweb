@@ -26,8 +26,9 @@ All rights reserved. Please see file "LICENSE" for details.
 		  	clearIval(this.__checkIval);
 		  },
                   checkSize: function() { // TODO: Also in interval
-                    if ( this.canvas.width != this.element.innerWidth() ||
-                        this.canvas.height != this.element.innerHeight()) {  
+                    if (this.element.innerWidth()>0 && this.element.innerHeight()>0 && 
+                        (this.canvas.width  != this.element.innerWidth() ||
+                         this.canvas.height != this.element.innerHeight())) {  
                         this.canvas.width=this.element.innerWidth();
                         this.canvas.height=this.element.innerHeight();
                         this.repaintNeeded=true;
@@ -64,6 +65,7 @@ All rights reserved. Please see file "LICENSE" for details.
                     var maxHeat=Math.max(10,heat,hD+350);
                     var w=this.canvas.width;
                     var h=this.canvas.height;
+                    if (h==0) return;
                     var scale=(h-10)/(maxHeat);
                     var zeroPos=maxHeat*scale+5;
                     var ctx=this.canvas.getContext('2d');

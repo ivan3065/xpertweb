@@ -99,7 +99,7 @@ io.sockets.on('connection', function (socket) {
 
   function muxconnect(token) { 
     if (mux) {
-      console.log("Double MUX Connection attempt!");
+      console.log("Double MUX Connection attempt!",token,mux.token);
       return;
     }
     var fresh=false;
@@ -110,6 +110,7 @@ io.sockets.on('connection', function (socket) {
         if (mux.active) {
           console.log("Attempt to re-use/multi-use an already active (",mux.active,") MuxConnection with TOKEN",token);
           // allow? Multi-Windowing?
+          // Causes Problems if one TAB clicks disconnect, the other tab will still think it's connected (with a dead mux object)
         }
         mux.resume();
 

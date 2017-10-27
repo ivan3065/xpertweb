@@ -412,6 +412,7 @@ $( window ).load(function() {
               $('#btn-todo').button('enable');
            }
       });
+      $('#todo-accordion').accordion();
    });
 
 

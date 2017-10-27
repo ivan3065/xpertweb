@@ -33,8 +33,9 @@ All rights reserved. Please see file "LICENSE" for details.
 		  	clearInterval(this.__checkIval);
 		  },
 		  checkSize: function() { // TODO: Also in interval
-		    if ( this.canvas.width != this.element.innerWidth() ||
-                        this.canvas.height != this.element.innerHeight()) {
+		    if (this.element.innerWidth()>0 && this.element.innerHeight()>0 && 
+		        (this.canvas.width  != this.element.innerWidth() ||
+                         this.canvas.height != this.element.innerHeight())) {
 		        this.canvas.width=this.element.innerWidth();
                         this.canvas.height=this.element.innerHeight();
                         this.repaintNeeded=true;
@@ -58,6 +59,7 @@ All rights reserved. Please see file "LICENSE" for details.
                     var minSpeed=Math.min(0,this.data.speed,this.data.desiredSpeed,this.data.backSpeed)-5;
                     var w=this.canvas.width;
                     var h=this.canvas.height;
+                    if (h==0) return;
                     var scale=(h-10)/(maxSpeed-minSpeed);
                     var zeroPos=maxSpeed*scale+5;
                     var ctx=this.canvas.getContext('2d');

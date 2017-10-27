@@ -367,7 +367,7 @@ All rights reserved. Please see file "LICENSE" for details.
 		  
 		  },
 		  checkSize : function() {
-		     if (this.__width!=this.element.innerWidth() || this.__height!=this.element.innerHeight()) {
+		     if (this.element.innerWidth()>0 && this.element.innerHeight()>0 && (this.__width!=this.element.innerWidth() || this.__height!=this.element.innerHeight())) {
 		         this.__width=this.element.innerWidth();
                          this.__height=this.element.innerHeight();
                          this.mapcanvas.width=Math.ceil(this.__width/this.fullHexWidth+OVERSCANX)*this.fullHexWidth;

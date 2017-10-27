@@ -16,10 +16,27 @@ div#mainwindow {
   position: absolute;
 }
 
-div#textwidget {
-  background-color: black;
-  color: #BBB;
-  padding: 10px;
+div.lrflex {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: row;
+} 
+
+div.tbflex {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+}
+
+div.mapheight {
+  flex:3;
+}
+
+div.contactheight {
+  flex:1;
+}
+ 
+div#maincontent {
   top:10px;
   bottom:50px;
   left: 10px;
@@ -27,9 +44,26 @@ div#textwidget {
   position: absolute;
 }
 
+div#textwidget {
+  background-color: black;
+  color: #BBB;
+  padding: 10px;
+  flex: 1;
+}
+
 body.battle div#textwidget {
-  right: auto;
-  width: 850px;
+  width: 55em;
+  flex: unset;
+}
+
+div.hudgroup {
+  display: none;
+  margin-left: 5px;
+}
+
+body.battle div.hudgroup {
+  flex: 1;
+  display: flex;
 }
 
 .footerline {
@@ -47,19 +81,11 @@ body.battle div#textwidget {
   width: 100%
 }
 
-div.xmud-heatbar {
-   overflow: hidden;
-}
-div.xmud-speedbar {
-   overflow: hidden;
-}
-
-div.xmud-mapview {
+div.hud {
+  position: relative;
   overflow: hidden;
-  z-index: 10;
 }
-
-div.xmud-mapview canvas {
+div.hud canvas {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -72,51 +98,25 @@ div.xmud-textview {
 }
 
 
-.hud {
-  display: none;
-}
-body.battle .hud {
-  display: block;
-}
-
 #map {
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  left: 970px;
-  bottom: 330px;
+  flex: 1;
   background-color: blue;
 }
 #heatbar {
-  position: absolute;
   width: 40px;
-  top: 60px;
-  left: 890px;
-  bottom: 330px;
   background-color: green;
 }
 #speedbar {
-  position: absolute;
   width: 40px;
-  top: 60px;
-  left: 930px;
-  bottom: 330px;
   background-color: yellow;
 }
 #weapons {
-  position: absolute;
-  left: 890px;
   width: 400px;
-  bottom: 60px;
-  height: 270px;
+  flex: 3;
   background-color: brown;
 }
 #contacts {
-  position: absolute;
-  left: 1290px;
-  right: 10px;
-  bottom: 60px;
-  height: 270px;
+  flex: 5;
   background-color: pink;
 }
 

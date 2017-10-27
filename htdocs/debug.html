@@ -35,17 +35,26 @@
 	</div>
 
 	<div id="mainwindow" class="ui-corner-all">
-          <div id="textwidget"></div>
+	  <div id="maincontent" class="lrflex">
+            <div id="textwidget"></div>
+            <div class="hudgroup tbflex">
+               <div class="lrflex mapheight">
+		    <div class="hud" id="heatbar"></div>
+		    <div class="hud" id="speedbar"></div>
+		    <div class="hud" id="map"></div>
+ 	       </div>
+	       <div class="lrflex contactheight">
+		    <div class="hud" id="weapons"></div>
+		    <div class="hud" id="contacts">... Contact List ...</div>
+	       </div>
+	    </div>
+          </div> 
+            
           <div class="footerline">
             <input id="text" type="text" autofocus tabindex="1" autocomplete="off">
           </div>
 	</div>
 
-  	  <div class="hud" id="map"></div>
-	  <div class="hud" id="heatbar"></div>
-	  <div class="hud" id="speedbar"></div>
-          <div class="hud" id="weapons"></div>
-	  <div class="hud" id="contacts">... Contact List ...</div>
 	
 	<div style="display: none">
 
@@ -65,18 +74,22 @@
 
 
 	  <div id="dialog-todo" title="TODO">
+	   <div id="todo-accordion">
+	    <h3>Open</h3>
+	    <div>
 	    <ul class="open">
 	    <li>Style support</li>
 	       <li>Make command echo configurable</li>
 	       <li>Add Ctrl-^ / Alt-^ as alias for Ctrl/alt-0</li>
 	       <li>Scroll text to bottom on enter-battle-mode</li>
-	      <li>Fix mapdata merge of ?? in hudinfo t reply (change to
-	      array-of-array-of-string instead of array-of-string?</li>
+	      <li>Fix mapdata merge of ?? in hudinfo t reply (change to array-of-array-of-string instead of array-of-string?</li>
 	      <li>Filter old contacts, display LOS-state, display predicted-state?</li>
 	      <li>Prettify map display style</li>
 	      <li>Follow-me and Zoomlevel UI elements on map</li>
 	      <li>speedbar font/marker issue for speed > 100</li>
 	      <li>Click Speedbar</li>
+	      <li>Weapons/Status widget</li>
+	      <li>Contact List Widget</li>
 	      <li>Keybindings for .add 0</li>
 	      <li>Prevent ALT-Button from focusing chrome menu btn</li>
 	      <li>extra-arc display for fliparms, rottorso, turret, (per weapon with ranges?)</li>
@@ -84,7 +97,9 @@
 	      <li>Idle-Timout to stop hudinfo after x minutes without userinteraction</li>
 	      <li>fix double style transmission without text in between: ["text",["\tYou may also orbital drop your ",["b"],["b","f11"],"ARC-5R",[]," for ",["b"],"112,375",[]," C-Bills."]]</li>
 	    </ul>
-	    <h2>Done</h2>
+	    </div>
+	    <h3>Done</h3>
+	    <div>
 	    <ul class="done">
 	       <li>Local Echo interprets HTML</li>
 	       <li>Store default connect script in localdata</li>
@@ -92,8 +107,7 @@
 	       <li>Handle resize events in all widgets</li>
 	      <li>extrapolate heat on heatbar</li>
 	      <li>doubleclick map for hudinfo t</li>
-	      <li>Fix ansi parser/textwidget not carrying color codes over
-	      newlines:  think %cbXXX%rYYY</li>
+	      <li>Fix ansi parser/textwidget not carrying color codes over newlines:  think %cbXXX%rYYY</li>
               <li>Predict mech movement/pos between status/contact calls</li>
 	      <li>fix middle click on map intepreted as inputline-pasting on Linux</li>
 	      <li>Display out-of-screen contacts (direction markers)</li>
@@ -107,8 +121,11 @@
 	      <li>"E# You are unconscious....zzzzzzz" stopps hud</li>
 	      <li>Buildings, hudinfo cb? check if supported at all by frontiers first: They are not.</li>
 	    </ul>
+	    </div>
 	  </div>
-        
+         </div>
         </div>
+        
+        
 	</body>
 </html>
