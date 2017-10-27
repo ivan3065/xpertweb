@@ -108,7 +108,7 @@ io.sockets.on('connection', function (socket) {
       if (token && muxes[token]) {
         mux=muxes[token];
         if (mux.active) {
-          console.log("Attempt to re-use an already active mux-connection");
+          console.log("Attempt to re-use/multi-use an already active (",mux.active,") MuxConnection with TOKEN",token);
           // allow? Multi-Windowing?
         }
         mux.resume();
@@ -118,8 +118,9 @@ io.sockets.on('connection', function (socket) {
     },
     function(next) {
      if (mux) return next();
-     token=crypto.pseudoRandomBytes(15).toString('base64'); // Default NodeJS/OpenSSL config: pseudoRandom and Random use the same engine, just pseudoRandom is allowed to continue if entropy pool is empty.
-     console.log("TOKEN", token);
+     // 9 Bytes should be enough, they translate to 12 Bytes of base64
+     token=crypto.pseudoRandomBytes(9).toString('base64'); // Default NodeJS/OpenSSL config: pseudoRandom and Random use the same engine, just pseudoRandom is allowed to continue if entropy pool is empty.
+     console.log("new MuxConnection with TOKEN", token);
      mux=net.connect({host: conf.muxserver, port: conf.muxport}, next);
      mux.active=0;
      fresh=true;
@@ -149,24 +150,24 @@ io.sockets.on('connection', function (socket) {
   }
 
   socket.on("muxconnect", muxconnect);
-  socket.on("muxdisconnect", function() {
+  socket.on("muxdisconnect", function muxdisconnect() {
     if (mux) {
       mux.removeListener("data",muxdata);
       // removes the listener in this window. If another tab was connected to that mux, it'll get the muxend callback
       mux.removeListener("end",muxend);
       mux.removeListener("error",muxerror);
-      console.log("mux.end called");
+      console.log("mux.end called for TOKEN",mux.token);
       delete muxes[mux.token];
       mux.end("\nquit\n");
     }
   });
 
   // Incoming!
-  socket.on("send", function(data) {
+  socket.on("send", function socksend(data) {
 //    console.log("send ",data);
     if (mux) mux.write(data+"\n"); // config param?
   });
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function sockdisconnect() {
     console.log("WEB-disconnected ",socket.id);
     if (mux) {
       mux.active--;
