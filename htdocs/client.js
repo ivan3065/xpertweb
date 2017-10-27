@@ -72,8 +72,20 @@ $( window ).load(function() {
   setTimeout(function() {  // delay a bit after "loaded" event to stop spinning wheel of anoyance
 
 
-   // Now connect websocket
-   var socket = io.connect();
+   // Now connect websocket, try to auto-detect reverse.proxy setups.
+   var socket;
+   (function doConnect() {
+     var l=document.location.pathname || '/';
+     l=l.replace(/[^/]+$/g,'');
+     l=l.replace(/\/\//,'/');
+     if (l!='/') {
+       l+='socket.io';
+       console.log("Assuming reverse proxy, trying to access websocket at",l);
+       socket = io.connect({path:l});
+     } else {
+       socket=io.connect();
+     }
+   })(); 
 
 
 
