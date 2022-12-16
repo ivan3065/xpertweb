@@ -8,7 +8,7 @@
   "dependencies": {
     "async": "*",
     "escape-html": "*",
-    "express": "3.x",
+    "express": "~4.17.3",
     "socket.io": "*"
   }
 }
